@@ -1,8 +1,6 @@
 # Dicionário de Dados - Plataforma de Ordens de Serviço (Altave)
 
-- **Disciplina:** Banco de Dados Relacional (BDR) - FATEC SJC
-- **Banco de Dados:** SQLite (`banco_altave.sqlite`)
-- **Script DDL:** [01_script_ddl_tabelas.sql](file:///home/vitor/fatec/bd/01_script_ddl_tabelas.sql)
+- **Script DDL:** [01_ddl_tabelas.sql](file:///home/vitor/fatec/bd/01_ddl_tabelas.sql)
 
 ---
 
