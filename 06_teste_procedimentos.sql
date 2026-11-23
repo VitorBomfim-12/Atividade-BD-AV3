@@ -60,14 +60,14 @@ CALL sp_tickets_acima_media_relatorios();
 -- 6
 SELECT id, titulo, status, prioridade, sla_em
 FROM tickets
-WHERE status != 'ENCERRADO' AND sla_em < '2026-11-18 00:00:00'
+WHERE status != 'ENCERRADO' AND sla_em < NOW()
 ORDER BY id;
 
 CALL sp_atualizar_prioridade_atrasados_cursor();
 
 SELECT id, titulo, status, prioridade, sla_em
 FROM tickets
-WHERE status != 'ENCERRADO' AND sla_em < '2026-11-18 00:00:00'
+WHERE status != 'ENCERRADO' AND sla_em < NOW()
 ORDER BY id;
 
 -- FUNCTIONS
@@ -147,7 +147,7 @@ ORDER BY criado_em, id;
 
 -- 3
 INSERT INTO tickets (id, titulo, descricao, categoria, prioridade, status, sla_em, projeto_id, aberto_por_id, responsavel_id)
-VALUES ('tkt-52', 'Calibracao de Sensor Optico', 'Ajuste de foco na torre sul', 'MANUTENCAO', 'ALTA', 'NAO_INICIADO', '2026-11-30 18:00:00', 'proj-01', 'usr-15', 'usr-26');
+VALUES ('tkt-52', 'Calibracao de Sensor Optico', 'Ajuste de foco na torre sul', 'MANUTENCAO', 'ALTA', 'NAO_INICIADO', DATE_ADD(NOW(), INTERVAL 5 DAY), 'proj-01', 'usr-15', 'usr-26');
 
 SELECT * 
 FROM historico_ticket 

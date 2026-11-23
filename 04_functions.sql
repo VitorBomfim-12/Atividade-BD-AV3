@@ -42,7 +42,7 @@ BEGIN
         SELECT CASE
             WHEN status = 'ENCERRADO' AND encerrado_em <= sla_em THEN 'ENCERRADO NO PRAZO'
             WHEN status = 'ENCERRADO' AND encerrado_em > sla_em THEN 'ENCERRADO COM ATRASO'
-            WHEN sla_em < '2026-11-18 12:00:00' THEN 'ATRASADO'
+            WHEN sla_em < NOW() THEN 'ATRASADO'
             ELSE 'DENTRO DO PRAZO'
         END
         FROM tickets

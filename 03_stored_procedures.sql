@@ -12,7 +12,7 @@ CREATE PROCEDURE sp_abrir_ticket(
 )
 BEGIN
     INSERT INTO tickets (id, titulo, descricao, categoria, prioridade, status, sla_em, projeto_id, aberto_por_id, responsavel_id)
-    VALUES (p_ticket_id, p_titulo, 'Instalacao de camera nova no setor 1', 'INSTALACAO', 'ALTA', 'NAO_INICIADO', '2026-11-25 18:00:00', p_projeto_id, p_aberto_por_id, 'usr-26');
+    VALUES (p_ticket_id, p_titulo, 'Instalacao de camera nova no setor 1', 'INSTALACAO', 'ALTA', 'NAO_INICIADO', DATE_ADD(NOW(), INTERVAL 3 DAY), p_projeto_id, p_aberto_por_id, 'usr-26');
 
     INSERT INTO ticket_equipes (id, ticket_id, equipe_id)
     VALUES (CONCAT('te-', p_ticket_id), p_ticket_id, p_equipe_id);
@@ -32,7 +32,7 @@ CREATE PROCEDURE sp_encerrar_ticket(
 BEGIN
     UPDATE tickets
     SET status = 'ENCERRADO',
-        encerrado_em = '2026-11-18 16:00:00'
+        encerrado_em = NOW()
     WHERE id = p_ticket_id;
 
     SELECT id, titulo, status, sla_em, encerrado_em
@@ -94,7 +94,7 @@ BEGIN
 
     DECLARE cur_atrasados CURSOR FOR
         SELECT id FROM tickets
-        WHERE status != 'ENCERRADO' AND sla_em < '2026-11-18 00:00:00';
+        WHERE status != 'ENCERRADO' AND sla_em < NOW();
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_fim = 1;
 
