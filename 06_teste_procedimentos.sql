@@ -34,19 +34,24 @@ GROUP BY e.id, e.nome, e.ativo;
 -- STORED PROCEDURES
 -- 1
 CALL sp_abrir_ticket(
-    'tkt-51',
+    'tkt-52',
     'Instalacao de Camera Termica Setor Norte',
+    'Instalação e calibração de câmera térmica no setor norte da plataforma.',
+    'INSTALACAO',
+    'ALTA',
+    'NAO_INICIADO',
+    '2026-11-30 18:00:00',
     'proj-01',
     'usr-09',
-    'eq-01'
+    'eq-01',
+    'usr-26'
 );
 
 -- 2
-SELECT id, titulo, status, sla_em, encerrado_em 
-FROM tickets 
-WHERE id = 'tkt-21';
-
+-- sucesso
 CALL sp_encerrar_ticket('tkt-21', 'usr-01');
+-- bloqueio
+CALL sp_encerrar_ticket('tkt-36', 'usr-01');
 
 -- 3
 CALL sp_relatorio_projetos_clientes();

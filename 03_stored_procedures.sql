@@ -6,13 +6,19 @@ DELIMITER $$
 CREATE PROCEDURE sp_abrir_ticket(
     IN p_ticket_id VARCHAR(36),
     IN p_titulo VARCHAR(200),
+    IN p_descricao text,
+    IN p_categoria varchar(30),
+	IN p_prioridade varchar(20),
+    IN p_status varchar(35),
+    IN p_sla_em datetime,
     IN p_projeto_id VARCHAR(36),
     IN p_aberto_por_id VARCHAR(36),
-    IN p_equipe_id VARCHAR(36)
+    IN p_equipe_id VARCHAR(36),
+    IN p_responsavel_id varchar(36)
 )
 BEGIN
-    INSERT INTO tickets (id, titulo, descricao, categoria, prioridade, status, sla_em, projeto_id, aberto_por_id, responsavel_id)
-    VALUES (p_ticket_id, p_titulo, 'Instalacao de camera nova no setor 1', 'INSTALACAO', 'ALTA', 'NAO_INICIADO', DATE_ADD(NOW(), INTERVAL 3 DAY), p_projeto_id, p_aberto_por_id, 'usr-26');
+    INSERT INTO tickets (id, titulo, descricao, categoria, prioridade, status, sla_em, projeto_id, aberto_por_id, responsavel_id, criado_em)
+    VALUES (p_ticket_id, p_titulo, p_descricao, p_categoria, p_prioridade, p_status, p_sla_em, p_projeto_id, p_aberto_por_id, p_responsavel_id, now());
 
     INSERT INTO ticket_equipes (id, ticket_id, equipe_id)
     VALUES (CONCAT('te-', p_ticket_id), p_ticket_id, p_equipe_id);
@@ -30,10 +36,22 @@ CREATE PROCEDURE sp_encerrar_ticket(
     IN p_usuario_id VARCHAR(36)
 )
 BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM relatorios 
+        WHERE ticket_id = p_ticket_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Erro: Não é possível encerrar um ticket sem relatório técnico.';
+    END IF;
+
     UPDATE tickets
     SET status = 'ENCERRADO',
         encerrado_em = NOW()
     WHERE id = p_ticket_id;
+
+    INSERT INTO historico_ticket (id, evento, descricao, ticket_id, usuario_id)
+    VALUES (UUID(), 'ENCERRAMENTO', 'Ticket encerrado após validação de relatório técnico.', p_ticket_id, p_usuario_id);
 
     SELECT id, titulo, status, sla_em, encerrado_em
     FROM tickets
